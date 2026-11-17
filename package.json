@@ -19,7 +19,7 @@
     "ts:compile": "tsc --build tsconfig.json"
   },
   "devDependencies": {
-    "@civ-clone/civ2-city-improvement": "github:civ-clone/civ2-city-improvement#750956a01cdc6faa5d75ab0aaa8c95702799164c",
+    "@civ-clone/civ2-city-improvement": "github:civ-clone/civ2-city-improvement",
     "@civ-clone/core-ai-client": "^0.1.3",
     "@civ-clone/core-world": "^0.1.24",
     "@types/chai": "^4.0.0",

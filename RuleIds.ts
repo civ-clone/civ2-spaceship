@@ -8,7 +8,6 @@ export const RuleIds = {
   partsLeft: `${prefix}:city/build/parts-left`,
   buildCost: `${prefix}:city/build-cost`,
   arrival: `${prefix}:turn/start/arrival`,
-  capitalLost: `${prefix}:turn/start/capital-lost`,
   launchable: `${prefix}:spaceship/launchable`,
 };
 

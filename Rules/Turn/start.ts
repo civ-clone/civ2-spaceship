@@ -25,7 +25,6 @@ import {
 import { NewSpaceshipDependencies, newSpaceship } from '../../lib/newSpaceship';
 import RuleIds, { prefix } from '../../RuleIds';
 import ApolloProgram from '@civ-clone/base-wonder-apolloprogram/ApolloProgram';
-import CapitalsLost from '../../lib/capitalLost';
 import Effect from '@civ-clone/core-rule/Effect';
 import High from '@civ-clone/core-rule/Priorities/High';
 import Player from '@civ-clone/core-player/Player';
@@ -43,10 +42,7 @@ export interface TurnStartDependencies extends NewSpaceshipDependencies {
   wonderRegistry?: WonderRegistry;
 }
 
-export const getRules = (
-  capitalsLost: CapitalsLost,
-  dependencies: TurnStartDependencies = {}
-): Start[] => {
+export const getRules = (dependencies: TurnStartDependencies = {}): Start[] => {
   const {
     cityBuildRegistry = cityBuildRegistryInstance,
     cityImprovementRegistry = cityImprovementRegistryInstance,
@@ -57,15 +53,6 @@ export const getRules = (
   } = dependencies;
 
   return [
-    // A person whose capital was taken has answered whether the Palace escapes: without one, the ship is lost
-    //  (`Rules/City/captured`). Before the arrival, so a lost ship can't land.
-    new Start(
-      RuleIds.capitalLost,
-      new High(),
-      new Effect((): void =>
-        capitalsLost.settleAll(cityImprovementRegistry, spaceshipRegistry)
-      )
-    ),
     // As the turn starts, the first launched ship whose arrival year has come lands, in player order, one a turn
     //  (OpenCiv2 `src/auto/game.cpp` `game_advance_turn` ~1735: `year >= arrival_year`, civs 1 to 7). `High`, before
     //  civ2-game-end's retirement, as the original checks the arrival first.

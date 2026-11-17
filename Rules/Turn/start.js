@@ -17,12 +17,9 @@ const wonderHistory_1 = require("@civ-clone/base-wonder/lib/wonderHistory");
 const landFirstArrival_1 = require("@civ-clone/base-spaceship/lib/landFirstArrival");
 const shipsForNewcomers_1 = require("@civ-clone/base-spaceship/lib/shipsForNewcomers");
 const stopPartsInFlight_1 = require("@civ-clone/base-spaceship/lib/stopPartsInFlight");
-const getRules = (capitalsLost, dependencies = {}) => {
+const getRules = (dependencies = {}) => {
     const { cityBuildRegistry = CityBuildRegistry_1.instance, cityImprovementRegistry = CityImprovementRegistry_1.instance, cityRegistry = CityRegistry_1.instance, playerRegistry = PlayerRegistry_1.instance, spaceshipRegistry = SpaceshipRegistry_1.instance, wonderRegistry = WonderRegistry_1.instance, } = dependencies;
     return [
-        // A person whose capital was taken has answered whether the Palace escapes: without one, the ship is lost
-        //  (`Rules/City/captured`). Before the arrival, so a lost ship can't land.
-        new Start_1.default(RuleIds_1.default.capitalLost, new High_1.default(), new Effect_1.default(() => capitalsLost.settleAll(cityImprovementRegistry, spaceshipRegistry))),
         // As the turn starts, the first launched ship whose arrival year has come lands, in player order, one a turn
         //  (OpenCiv2 `src/auto/game.cpp` `game_advance_turn` ~1735: `year >= arrival_year`, civs 1 to 7). `High`, before
         //  civ2-game-end's retirement, as the original checks the arrival first.

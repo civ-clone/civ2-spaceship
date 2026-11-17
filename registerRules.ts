@@ -9,10 +9,8 @@ import {
   requiresAdvance,
   requiresApollo,
 } from './Requirements';
-import CapitalsLost from './lib/capitalLost';
 import cityBuildCost from './Rules/City/build-cost';
 import cityBuildingComplete from './Rules/City/building-complete';
-import cityCaptured from './Rules/City/captured';
 import playerAction from './Rules/Player/action';
 import playerDefeated from './Rules/Player/defeated';
 import spaceshipActive from './Rules/Spaceship/active';
@@ -23,8 +21,7 @@ import spaceshipYield from './Rules/Spaceship/yield';
 import turnStart from './Rules/Turn/start';
 
 export const register = (game: Game): void => {
-  const capitalsLost = new CapitalsLost(),
-    shipDependencies = {
+  const shipDependencies = {
       clientRegistry: game.clients,
       pendingEffectRegistry: game.pendingEffects,
       playerResearchRegistry: game.playerResearch,
@@ -55,11 +52,6 @@ export const register = (game: Game): void => {
       ...shipDependencies,
       playerRegistry: game.players,
     }),
-    ...cityCaptured(capitalsLost, {
-      cityImprovementRegistry: game.cityImprovements,
-      clientRegistry: game.clients,
-      spaceshipRegistry: game.spaceships,
-    }),
     ...playerAction(game.spaceships),
     ...playerDefeated(game.spaceships),
     ...spaceshipActive(game.spaceships, game.clients),
@@ -67,7 +59,7 @@ export const register = (game: Game): void => {
     ...spaceshipEvents({ ...shipDependencies, engine: game.engine }),
     ...spaceshipStats({ ...shipDependencies, engine: game.engine }),
     ...spaceshipYield(),
-    ...turnStart(capitalsLost, {
+    ...turnStart({
       ...shipDependencies,
       cityBuildRegistry: game.cityBuilds,
       cityImprovementRegistry: game.cityImprovements,

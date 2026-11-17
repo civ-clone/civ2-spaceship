@@ -4,10 +4,8 @@ exports.register = void 0;
 const core_game_1 = require("@civ-clone/core-game");
 const build_1 = require("./Rules/City/build");
 const Requirements_1 = require("./Requirements");
-const capitalLost_1 = require("./lib/capitalLost");
 const build_cost_1 = require("./Rules/City/build-cost");
 const building_complete_1 = require("./Rules/City/building-complete");
-const captured_1 = require("./Rules/City/captured");
 const action_1 = require("./Rules/Player/action");
 const defeated_1 = require("./Rules/Player/defeated");
 const active_1 = require("./Rules/Spaceship/active");
@@ -17,7 +15,7 @@ const stats_1 = require("./Rules/Spaceship/stats");
 const yield_1 = require("./Rules/Spaceship/yield");
 const start_1 = require("./Rules/Turn/start");
 const register = (game) => {
-    const capitalsLost = new capitalLost_1.default(), shipDependencies = {
+    const shipDependencies = {
         clientRegistry: game.clients,
         pendingEffectRegistry: game.pendingEffects,
         playerResearchRegistry: game.playerResearch,
@@ -35,11 +33,7 @@ const register = (game) => {
     game.rules.register(...(0, build_cost_1.default)(), ...(0, building_complete_1.default)({
         ...shipDependencies,
         playerRegistry: game.players,
-    }), ...(0, captured_1.default)(capitalsLost, {
-        cityImprovementRegistry: game.cityImprovements,
-        clientRegistry: game.clients,
-        spaceshipRegistry: game.spaceships,
-    }), ...(0, action_1.default)(game.spaceships), ...(0, defeated_1.default)(game.spaceships), ...(0, active_1.default)(game.spaceships, game.clients), ...(0, choose_slot_1.default)(), ...(0, events_1.default)({ ...shipDependencies, engine: game.engine }), ...(0, stats_1.default)({ ...shipDependencies, engine: game.engine }), ...(0, yield_1.default)(), ...(0, start_1.default)(capitalsLost, {
+    }), ...(0, action_1.default)(game.spaceships), ...(0, defeated_1.default)(game.spaceships), ...(0, active_1.default)(game.spaceships, game.clients), ...(0, choose_slot_1.default)(), ...(0, events_1.default)({ ...shipDependencies, engine: game.engine }), ...(0, stats_1.default)({ ...shipDependencies, engine: game.engine }), ...(0, yield_1.default)(), ...(0, start_1.default)({
         ...shipDependencies,
         cityBuildRegistry: game.cityBuilds,
         cityImprovementRegistry: game.cityImprovements,

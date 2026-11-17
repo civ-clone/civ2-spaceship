@@ -4,7 +4,6 @@ import { CityRegistry } from '@civ-clone/core-city/CityRegistry';
 import { PlayerRegistry } from '@civ-clone/core-player/PlayerRegistry';
 import { WonderRegistry } from '@civ-clone/core-wonder/WonderRegistry';
 import { NewSpaceshipDependencies } from '../../lib/newSpaceship';
-import CapitalsLost from '../../lib/capitalLost';
 import Start from '@civ-clone/core-turn-based-game/Rules/Start';
 export interface TurnStartDependencies extends NewSpaceshipDependencies {
   cityBuildRegistry?: CityBuildRegistry;
@@ -14,7 +13,6 @@ export interface TurnStartDependencies extends NewSpaceshipDependencies {
   wonderRegistry?: WonderRegistry;
 }
 export declare const getRules: (
-  capitalsLost: CapitalsLost,
   dependencies?: TurnStartDependencies
 ) => Start[];
 export default getRules;

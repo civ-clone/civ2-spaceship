@@ -6,7 +6,6 @@ export declare const RuleIds: {
   partsLeft: string;
   buildCost: string;
   arrival: string;
-  capitalLost: string;
   launchable: string;
 };
 export default RuleIds;

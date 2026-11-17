@@ -10,7 +10,6 @@ exports.RuleIds = {
     partsLeft: `${exports.prefix}:city/build/parts-left`,
     buildCost: `${exports.prefix}:city/build-cost`,
     arrival: `${exports.prefix}:turn/start/arrival`,
-    capitalLost: `${exports.prefix}:turn/start/capital-lost`,
     launchable: `${exports.prefix}:spaceship/launchable`,
 };
 exports.default = exports.RuleIds;

@@ -17,7 +17,7 @@ richardpenman/civ2@49f26ec): the Classic behaviour, numbers only.
 
 - **Building them** (`Requirements`, `Rules/City/build`): the Apollo Program built by anyone, even if lost since
   (`Part` requires `ApolloProgram` at `range: 'world'`); each kind's advance; only for a ship that hasn't launched, in
-  the years AD; and no more of a kind than can be built. The costs are the group's @IMPROVE rows × 10.
+  the years AD (and not once it has landed); and no more of a kind than can be built. The costs are the group's @IMPROVE rows × 10.
 - **The ship:** once the Apollo Program is built every player gets a ship (`SpaceshipLayout`, our own plain layout: a
   row of slots for each kind), and a player who comes into the game later gets one at the start of a turn. A part goes
   into the first empty slot of its kind.
@@ -51,10 +51,10 @@ richardpenman/civ2@49f26ec): the Classic behaviour, numbers only.
 
 ## Losing a ship
 
-- **The capital taken:** the ship is lost unless the Palace escapes to another city for 1000 gold
-  (civ2-city-improvement). A computer player's is settled at the capture; a person, who is asked, at the start of the
-  next turn. A launched ship returns, one being built is destroyed (`player:spaceship:lost`, with whether it had
-  launched); either way its player may build another.
+- **The capital taken:** civ2-city-improvement's Palace escape loses the ship whenever the Palace isn't moved to
+  another city for 1000 gold (base-spaceship's `cancelSpaceship`), as the original does in the escape itself. A
+  launched ship returns, one being built is destroyed (`player:spaceship:lost`, with whether it had launched); either
+  way its player may build another.
 - **The civilization destroyed** loses its ship.
 
 ## Events
@@ -74,7 +74,5 @@ Register `SpaceshipLayout` with the game's saveable classes. The launch record i
   built.
 - The flight time a ship shows before it launches is the arrival flight in whole years, not the mass's flight in
   tenths.
-- A person's ship waiting on a Palace escape isn't saved: a game saved between the capture and the next turn keeps
-  the ship.
 - Not here: a computer player's launch and its re-picked production (the computer players' space race), and the
   launch's diplomacy (civ2-diplomacy).

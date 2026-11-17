@@ -30,6 +30,7 @@ import Start from '@civ-clone/core-turn-based-game/Rules/Start';
 import Turn from '@civ-clone/core-turn-based-game/Turn';
 import Year from '@civ-clone/core-game-year/Year';
 import YearRule from '@civ-clone/core-game-year/Rules/Year';
+import civ2CityImprovementCaptured from '@civ-clone/civ2-city-improvement/Rules/City/captured';
 import { expect } from 'chai';
 import { launchRecord } from '../lib/ship';
 import { register } from '../registerRules';
@@ -272,61 +273,43 @@ describe('civ2-spaceship rules', (): void => {
     expect(game.spaceships.getActiveByPlayer(person)).not.equal(spaceship);
   });
 
-  it("loses a computer player's ship with its capital unless the Palace escapes, a person's at the next turn", (): void => {
-    const { cities, computer, fill, game, person, rules, startTurn } = setUp(),
-      computerShip = fill(computer),
-      personShip = fill(person),
-      capital = cities.get(computer)!,
-      personCapital = cities.get(person)!,
-      palace = new Palace(capital, rules),
-      personPalace = new Palace(personCapital, rules);
-
-    game.cityImprovements.register(palace, personPalace);
-
-    // civ2-city-improvement destroys the Palace (here, by hand, between the two rules).
-    rules.register(
-      new Captured(
-        new Effect((city: City) =>
-          game.cityImprovements
-            .getByCity(city)
-            .forEach((improvement) => improvement.destroy())
-        )
-      )
-    );
-
-    rules.process(Captured, capital, person, computer, null);
-    expect(computerShip.successful()).false;
-
-    rules.process(Captured, personCapital, computer, person, null);
-    expect(personShip.successful()).null;
-
-    startTurn(2);
-    expect(personShip.successful()).false;
-  });
-
-  it('keeps the ship when the Palace escapes', (): void => {
+  it("loses the ship with the capital through civ2-city-improvement's Palace escape, a computer player's or a person's", (): void => {
     const { cities, computer, fill, game, person, rules } = setUp(),
-      computerShip = fill(computer),
-      capital = cities.get(computer)!,
-      other = {
-        player: () => computer,
-        destroyed: () => false,
-        id: () => 'other',
-      } as unknown as City,
-      palace = new Palace(capital, rules);
+      ships = [fill(computer), fill(person)],
+      capitals = [cities.get(computer)!, cities.get(person)!];
 
-    game.cityImprovements.register(palace);
+    capitals.forEach((capital) =>
+      game.cityImprovements.register(new Palace(capital, rules))
+    );
+    // Its escape and its Palace's loss, as civ2-city-improvement registers them.
     rules.register(
-      new Captured(
-        new Effect(() => {
-          palace.destroy();
-          game.cityImprovements.register(new Palace(other, rules));
-        })
+      ...civ2CityImprovementCaptured({
+        cityGrowthRegistry: game.cityGrowth,
+        cityImprovementRegistry: game.cityImprovements,
+        cityRegistry: game.cities,
+        clientRegistry: game.clients,
+        gameDifficultyRegistry: game.difficulty,
+        landMassRegistry: game.landMasses,
+        playerTreasuryRegistry: game.playerTreasuries,
+        ruleRegistry: rules,
+        spaceshipRegistry: game.spaceships,
+        unitRegistry: game.units,
+      } as any).filter((rule) =>
+        [
+          'civ2-city-improvement:city/captured/palace-escape',
+          'civ2-city-improvement:city/captured/palace',
+        ].includes(rule.id()!)
       )
     );
 
-    rules.process(Captured, capital, person, computer, null);
-    expect(computerShip.successful()).null;
+    // Neither has the 1000 gold to move its Palace.
+    rules.process(Captured, capitals[0], person, computer, null);
+    rules.process(Captured, capitals[1], computer, person, null);
+
+    expect(ships.map((ship) => ship.successful())).eql([false, false]);
+    // Each may build another.
+    expect(game.spaceships.getActiveByPlayer(computer)).not.null;
+    expect(game.spaceships.getActiveByPlayer(person)).not.null;
   });
 });
 

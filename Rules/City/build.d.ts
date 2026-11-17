@@ -25,7 +25,7 @@ export declare const deriveBuildRules: (
 ) => Deriver;
 /**
  * Parts are built only for a ship that hasn't launched, and only in the years AD (`city_can_build_improvement` ~2185:
- *  `0 < game.year` and `civ_spaceship_launched(civ) == 0`). A player with no ship yet may build them: the first part
+ *  `0 < game.year` and `civ_spaceship_launched(civ) == 0`): not once it has landed either, as the launched flag stays. A player with no ship yet may build them: the first part
  *  brings one (`Rules/City/building-complete`).
  */
 export declare const notLaunchedRule: (

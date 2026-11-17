@@ -86,6 +86,21 @@ export const hasSpaceship = (
 };
 
 /**
+ * Whether `player`'s ship has launched (`civ_spaceship_launched`, `SHIP_LAUNCHED`): one in flight or one that has
+ *  landed. A lost ship doesn't count: its player may build another.
+ */
+export const hasLaunched = (
+  player: Player,
+  spaceshipRegistry: SpaceshipRegistry = spaceshipRegistryInstance
+): boolean =>
+  spaceshipRegistry
+    .getBy('player', player)
+    .some(
+      (spaceship: Spaceship): boolean =>
+        spaceship.launched() !== false && spaceship.successful() !== false
+    );
+
+/**
  * The record of a launch, kept in the game's pending effects so it's saved: nothing discharges it. It holds whether the
  *  ship had fusion (`SHIP_FUSION` is set only before the launch), the launch year and the arrival year.
  */

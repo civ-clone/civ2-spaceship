@@ -9,6 +9,7 @@ const BulidingComplete_1 = require("@civ-clone/core-city-build/Rules/BulidingCom
 const Criterion_1 = require("@civ-clone/core-rule/Criterion");
 const Effect_1 = require("@civ-clone/core-rule/Effect");
 const Part_1 = require("@civ-clone/core-spaceship/Part");
+const ship_1 = require("../../lib/ship");
 const RuleIds_1 = require("../../RuleIds");
 const shipsForNewcomers_1 = require("@civ-clone/base-spaceship/lib/shipsForNewcomers");
 const getRules = (dependencies = {}) => {
@@ -20,10 +21,12 @@ const getRules = (dependencies = {}) => {
         // A part goes onto its player's ship, while it hasn't launched (`spaceship_add_part`, which does nothing once
         //  it has).
         new BulidingComplete_1.default(`${RuleIds_1.prefix}:city/building-complete/part`, new Criterion_1.default((cityBuild, built) => built instanceof Part_1.default), new Effect_1.default((cityBuild, built) => {
-            const part = built, spaceship = (0, newSpaceship_1.shipFor)(part.city().player(), dependencies);
-            if (spaceship.launched() !== false) {
+            const part = built;
+            // In flight or landed: the part is left behind, and no second ship is made for it.
+            if ((0, ship_1.hasLaunched)(part.city().player(), spaceshipRegistry)) {
                 return;
             }
+            const spaceship = (0, newSpaceship_1.shipFor)(part.city().player(), dependencies);
             spaceship.add(part);
         })),
     ];

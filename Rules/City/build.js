@@ -42,14 +42,10 @@ const deriveBuildRules = (wonderRegistry, playerResearchRegistry, cityImprovemen
 exports.deriveBuildRules = deriveBuildRules;
 /**
  * Parts are built only for a ship that hasn't launched, and only in the years AD (`city_can_build_improvement` ~2185:
- *  `0 < game.year` and `civ_spaceship_launched(civ) == 0`). A player with no ship yet may build them: the first part
+ *  `0 < game.year` and `civ_spaceship_launched(civ) == 0`): not once it has landed either, as the launched flag stays. A player with no ship yet may build them: the first part
  *  brings one (`Rules/City/building-complete`).
  */
-const notLaunchedRule = (spaceshipRegistry = SpaceshipRegistry_1.instance, year = Year_1.instance) => new Build_1.Build(RuleIds_1.default.notLaunched, Part_1.default, new Criterion_1.default((city, BuildItem) => isPart(BuildItem)), new Effect_1.default((city) => new Criterion_1.default(() => {
-    var _a, _b;
-    return year.value() > 0 &&
-        ((_b = (_a = spaceshipRegistry.getActiveByPlayer(city.player())) === null || _a === void 0 ? void 0 : _a.launched()) !== null && _b !== void 0 ? _b : false) === false;
-})));
+const notLaunchedRule = (spaceshipRegistry = SpaceshipRegistry_1.instance, year = Year_1.instance) => new Build_1.Build(RuleIds_1.default.notLaunched, Part_1.default, new Criterion_1.default((city, BuildItem) => isPart(BuildItem)), new Effect_1.default((city) => new Criterion_1.default(() => year.value() > 0 && !(0, ship_1.hasLaunched)(city.player(), spaceshipRegistry))));
 exports.notLaunchedRule = notLaunchedRule;
 /**
  * No more of a kind than can be built (39 structurals, 8 of each component, 4 of each module). The original asks a

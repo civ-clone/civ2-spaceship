@@ -205,10 +205,15 @@ describe('civ2-spaceship rules', (): void => {
     startTurn(415);
     expect(spaceship.successful()).true;
     expect(events).deep.include(['player:spaceship:landed', person]);
+
+    // Landed, it's still launched: a part finished now is left behind, and makes no second ship.
+    fill(person, [[Structural, 1]]);
+    expect(game.spaceships.getBy('player', person)).length(1);
   });
 
   it('stops building parts once launched, and refuses a kind built in full', (): void => {
-    const { cities, complete, fill, game, person, rules, turn } = setUp(),
+    const { cities, complete, fill, game, person, rules, startTurn, turn } =
+        setUp(),
       city = cities.get(person)!,
       buildable = (PartType: typeof Part): boolean =>
         rules
@@ -248,6 +253,11 @@ describe('civ2-spaceship rules', (): void => {
     expect(
       spaceship.inactiveParts().length + spaceship.activeParts().length
     ).equal(58);
+
+    // Landed, the flag stays: still no parts.
+    startTurn(300 + spaceship.flightTime());
+    expect(spaceship.successful()).true;
+    expect(buildable(Structural)).false;
   });
 
   it('loses a ship when its player is destroyed, and gives a new one', (): void => {

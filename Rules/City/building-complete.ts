@@ -19,6 +19,7 @@ import Criterion from '@civ-clone/core-rule/Criterion';
 import Effect from '@civ-clone/core-rule/Effect';
 import Part from '@civ-clone/core-spaceship/Part';
 import Player from '@civ-clone/core-player/Player';
+import { hasLaunched } from '../../lib/ship';
 import { prefix } from '../../RuleIds';
 import shipsForNewcomers from '@civ-clone/base-spaceship/lib/shipsForNewcomers';
 
@@ -58,12 +59,14 @@ export const getRules = (
           built instanceof Part
       ),
       new Effect((cityBuild: CityBuild, built: BuildableInstance): void => {
-        const part = built as Part,
-          spaceship = shipFor(part.city().player(), dependencies);
+        const part = built as Part;
 
-        if (spaceship.launched() !== false) {
+        // In flight or landed: the part is left behind, and no second ship is made for it.
+        if (hasLaunched(part.city().player(), spaceshipRegistry)) {
           return;
         }
+
+        const spaceship = shipFor(part.city().player(), dependencies);
 
         spaceship.add(part);
       })

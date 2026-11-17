@@ -30,7 +30,7 @@ import Part from '@civ-clone/core-spaceship/Part';
 import RuleIds from '../../RuleIds';
 import Wonder from '@civ-clone/core-wonder/Wonder';
 import { buildRulesFor as advanceBuildRulesFor } from '@civ-clone/base-city-improvement-rules/lib/build';
-import { built } from '../../lib/ship';
+import { built, hasLaunched } from '../../lib/ship';
 import { everBuilt } from '@civ-clone/base-wonder/lib/wonderHistory';
 import parts from '../../data/parts';
 
@@ -102,7 +102,7 @@ export const deriveBuildRules =
 
 /**
  * Parts are built only for a ship that hasn't launched, and only in the years AD (`city_can_build_improvement` ~2185:
- *  `0 < game.year` and `civ_spaceship_launched(civ) == 0`). A player with no ship yet may build them: the first part
+ *  `0 < game.year` and `civ_spaceship_launched(civ) == 0`): not once it has landed either, as the launched flag stays. A player with no ship yet may build them: the first part
  *  brings one (`Rules/City/building-complete`).
  */
 export const notLaunchedRule = (
@@ -119,9 +119,7 @@ export const notLaunchedRule = (
       (city: City): IBuildCriterion =>
         new Criterion(
           (): boolean =>
-            year.value() > 0 &&
-            (spaceshipRegistry.getActiveByPlayer(city.player())?.launched() ??
-              false) === false
+            year.value() > 0 && !hasLaunched(city.player(), spaceshipRegistry)
         )
     )
   );

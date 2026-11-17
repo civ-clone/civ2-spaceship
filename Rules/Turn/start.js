@@ -34,7 +34,7 @@ const getRules = (dependencies = {}) => {
             if (!(0, wonderHistory_1.everBuilt)(ApolloProgram_1.default, wonderRegistry, cityImprovementRegistry)) {
                 return;
             }
-            (0, shipsForNewcomers_1.default)(playerRegistry, spaceshipRegistry, (player) => (0, newSpaceship_1.newSpaceship)(player, dependencies));
+            (0, shipsForNewcomers_1.default)((0, newSpaceship_1.shipPlayers)(playerRegistry), spaceshipRegistry, (player) => (0, newSpaceship_1.newSpaceship)(player, dependencies));
         })),
     ];
 };

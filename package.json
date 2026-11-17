@@ -34,6 +34,7 @@
   "dependencies": {
     "@civ-clone/base-city-improvement-palace": "^0.1.0",
     "@civ-clone/base-city-improvement-rules": "^0.1.0",
+    "@civ-clone/base-civilization-barbarian": "^0.1.1",
     "@civ-clone/base-difficulty": "^0.1.0",
     "@civ-clone/base-player-action-launch-spaceship": "^0.1.0",
     "@civ-clone/base-science-advance-fusionpower": "^0.1.0",

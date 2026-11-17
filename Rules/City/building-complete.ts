@@ -10,6 +10,7 @@ import {
   NewSpaceshipDependencies,
   newSpaceship,
   shipFor,
+  shipPlayers,
 } from '../../lib/newSpaceship';
 import ApolloProgram from '@civ-clone/base-wonder-apolloprogram/ApolloProgram';
 import { BuildableInstance } from '@civ-clone/core-city-build/Buildable';
@@ -45,8 +46,10 @@ export const getRules = (
           built instanceof ApolloProgram
       ),
       new Effect((): void =>
-        shipsForNewcomers(playerRegistry, spaceshipRegistry, (player: Player) =>
-          newSpaceship(player, dependencies)
+        shipsForNewcomers(
+          shipPlayers(playerRegistry),
+          spaceshipRegistry,
+          (player: Player) => newSpaceship(player, dependencies)
         )
       )
     ),

@@ -22,7 +22,11 @@ import {
   WonderRegistry,
   instance as wonderRegistryInstance,
 } from '@civ-clone/core-wonder/WonderRegistry';
-import { NewSpaceshipDependencies, newSpaceship } from '../../lib/newSpaceship';
+import {
+  NewSpaceshipDependencies,
+  newSpaceship,
+  shipPlayers,
+} from '../../lib/newSpaceship';
 import RuleIds, { prefix } from '../../RuleIds';
 import ApolloProgram from '@civ-clone/base-wonder-apolloprogram/ApolloProgram';
 import Effect from '@civ-clone/core-rule/Effect';
@@ -81,8 +85,10 @@ export const getRules = (dependencies: TurnStartDependencies = {}): Start[] => {
           return;
         }
 
-        shipsForNewcomers(playerRegistry, spaceshipRegistry, (player: Player) =>
-          newSpaceship(player, dependencies)
+        shipsForNewcomers(
+          shipPlayers(playerRegistry),
+          spaceshipRegistry,
+          (player: Player) => newSpaceship(player, dependencies)
         );
       })
     ),

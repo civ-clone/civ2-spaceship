@@ -17,7 +17,7 @@ const getRules = (dependencies = {}) => {
     return [
         // The Apollo Program lets everyone build parts: here parts go into a ship, so every player gets one, each on a
         //  layout of its own. The original keeps no ship apart from the parts built.
-        new BulidingComplete_1.default(`${RuleIds_1.prefix}:city/building-complete/apollo-program`, new Criterion_1.default((cityBuild, built) => built instanceof ApolloProgram_1.default), new Effect_1.default(() => (0, shipsForNewcomers_1.default)(playerRegistry, spaceshipRegistry, (player) => (0, newSpaceship_1.newSpaceship)(player, dependencies)))),
+        new BulidingComplete_1.default(`${RuleIds_1.prefix}:city/building-complete/apollo-program`, new Criterion_1.default((cityBuild, built) => built instanceof ApolloProgram_1.default), new Effect_1.default(() => (0, shipsForNewcomers_1.default)((0, newSpaceship_1.shipPlayers)(playerRegistry), spaceshipRegistry, (player) => (0, newSpaceship_1.newSpaceship)(player, dependencies)))),
         // A part goes onto its player's ship, while it hasn't launched (`spaceship_add_part`, which does nothing once
         //  it has).
         new BulidingComplete_1.default(`${RuleIds_1.prefix}:city/building-complete/part`, new Criterion_1.default((cityBuild, built) => built instanceof Part_1.default), new Effect_1.default((cityBuild, built) => {

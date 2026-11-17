@@ -7,6 +7,8 @@ import {
   Structural,
 } from '../Parts';
 import AIClient from '@civ-clone/core-ai-client/AIClient';
+import Barbarian from '@civ-clone/base-civilization-barbarian/Barbarian';
+import Landed from '@civ-clone/core-spaceship/Rules/Landed';
 import Action from '@civ-clone/core-player/Rules/Action';
 import ApolloProgram from '@civ-clone/base-wonder-apolloprogram/ApolloProgram';
 import Build from '@civ-clone/core-city-build/Rules/Build';
@@ -186,7 +188,7 @@ describe('civ2-spaceship rules', (): void => {
   });
 
   it('launches on the full mass flight, lands as the arrival year starts, and keeps a year a turn', (): void => {
-    const { events, fill, person, startTurn, turn, game } = setUp(),
+    const { events, fill, person, rules, startTurn, turn, game } = setUp(),
       spaceship = fill(person);
 
     turn.set(400);
@@ -203,9 +205,26 @@ describe('civ2-spaceship rules', (): void => {
     startTurn(414);
     expect(spaceship.successful()).null;
 
+    // The game ends for it in civ2-game-end's rule, at the default priority and registered first (civ2-game-end loads
+    //  before civ2-spaceship), yet after the landing is announced.
+    const emit = rules.getById('civ2-spaceship:spaceship/landed/emit')!;
+
+    rules.unregister(emit);
+    rules.register(
+      new Landed(
+        new Effect(() => {
+          events.push(['game:over']);
+        })
+      ),
+      emit
+    );
+
     startTurn(415);
     expect(spaceship.successful()).true;
-    expect(events).deep.include(['player:spaceship:landed', person]);
+    expect(events.slice(-2)).eql([
+      ['player:spaceship:landed', person],
+      ['game:over'],
+    ]);
 
     // Landed, it's still launched: a part finished now is left behind, and makes no second ship.
     fill(person, [[Structural, 1]]);
@@ -317,7 +336,11 @@ describe('civ2-spaceship: the Apollo Program', (): void => {
   it('gives every player a ship when it is built, and a newcomer one at the start of a turn', (): void => {
     const { cities, computer, game, person, rules, startTurn } = setUp(),
       apollo = new ApolloProgram(cities.get(person)!, rules),
-      newcomer = new Player(rules);
+      newcomer = new Player(rules),
+      barbarians = new Player(rules);
+
+    barbarians.setCivilization(new Barbarian());
+    game.players.register(barbarians);
 
     startTurn(2);
     expect(game.spaceships.entries()).length(0);
@@ -330,6 +353,8 @@ describe('civ2-spaceship: the Apollo Program', (): void => {
     game.players.register(newcomer);
     startTurn(3);
     expect(game.spaceships.getActiveByPlayer(newcomer)).not.null;
+    // Never the barbarians.
+    expect(game.spaceships.getActiveByPlayer(barbarians)).null;
     expect(game.spaceships.entries()).length(3);
   });
 });

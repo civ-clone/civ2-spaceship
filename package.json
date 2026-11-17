@@ -2,6 +2,7 @@
   "name": "@civ-clone/civ2-spaceship",
   "version": "0.0.0",
   "description": "Civilization II's spaceship: its parts, their limits, the flight and the launch.",
+  "main": "index.js",
   "repository": "git@github.com:civ-clone/civ2-spaceship.git",
   "keywords": [
     "typescript",
@@ -9,5 +10,69 @@
   ],
   "author": "dom111 <dom111@users.noreply.github.com>",
   "license": "MIT",
-  "private": false
+  "private": false,
+  "scripts": {
+    "build": "npm run ts:compile && npm run prettier:format",
+    "prettier:check": "prettier --config .prettierrc --check '**/*.ts'",
+    "prettier:format": "prettier --config .prettierrc '**/*.ts' --write",
+    "test": "ts-mocha ./tests/*.test.ts",
+    "ts:compile": "tsc --build tsconfig.json"
+  },
+  "devDependencies": {
+    "@civ-clone/civ2-city-improvement": "github:civ-clone/civ2-city-improvement#750956a01cdc6faa5d75ab0aaa8c95702799164c",
+    "@civ-clone/core-ai-client": "^0.1.3",
+    "@civ-clone/core-world": "^0.1.24",
+    "@types/chai": "^4.0.0",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^16.0.0",
+    "chai": "^4.0.0",
+    "mocha": "^10.0.0",
+    "prettier": "^2.8.8",
+    "ts-mocha": "^10.0.0",
+    "typescript": "^4.0.0"
+  },
+  "dependencies": {
+    "@civ-clone/base-city-improvement-palace": "^0.1.0",
+    "@civ-clone/base-city-improvement-rules": "^0.1.0",
+    "@civ-clone/base-civilization-barbarian": "^0.1.1",
+    "@civ-clone/base-difficulty": "^0.1.0",
+    "@civ-clone/base-player-action-launch-spaceship": "^0.1.0",
+    "@civ-clone/base-science-advance-fusionpower": "^0.1.0",
+    "@civ-clone/base-science-advance-plastics": "^0.1.0",
+    "@civ-clone/base-science-advance-spaceflight": "^0.1.0",
+    "@civ-clone/base-science-advance-superconductor": "^0.1.0",
+    "@civ-clone/base-spaceship": "^0.1.0",
+    "@civ-clone/base-spaceship-fuel": "^0.1.0",
+    "@civ-clone/base-spaceship-habitation": "^0.1.0",
+    "@civ-clone/base-spaceship-life-support": "^0.1.0",
+    "@civ-clone/base-spaceship-power": "^0.1.0",
+    "@civ-clone/base-spaceship-propulsion": "^0.1.0",
+    "@civ-clone/base-spaceship-structural": "^0.1.0",
+    "@civ-clone/base-spaceship-yield-mass": "^0.1.1",
+    "@civ-clone/base-spaceship-yield-population": "^0.1.1",
+    "@civ-clone/base-wonder": "^0.1.1",
+    "@civ-clone/base-wonder-apolloprogram": "^0.1.1",
+    "@civ-clone/civ2-rules": "github:civ-clone/civ2-rules",
+    "@civ-clone/core-city": "^0.1.25",
+    "@civ-clone/core-city-build": "^0.1.23",
+    "@civ-clone/core-city-improvement": "^0.1.8",
+    "@civ-clone/core-client": "^0.1.4",
+    "@civ-clone/core-engine": "^0.1.6",
+    "@civ-clone/core-game": "^0.1.17",
+    "@civ-clone/core-game-year": "^0.1.6",
+    "@civ-clone/core-pending-effect": "^0.1.2",
+    "@civ-clone/core-player": "^0.1.10",
+    "@civ-clone/core-registry": "^0.1.6",
+    "@civ-clone/core-requirement": "^0.1.3",
+    "@civ-clone/core-rule": "^0.1.9",
+    "@civ-clone/core-science": "^0.1.9",
+    "@civ-clone/core-spaceship": "^0.1.11",
+    "@civ-clone/core-turn-based-game": "^0.1.10",
+    "@civ-clone/core-wonder": "^0.1.5"
+  },
+  "civ-clone": {
+    "conflicts": [
+      "@civ-clone/civ1-spaceship"
+    ]
+  }
 }

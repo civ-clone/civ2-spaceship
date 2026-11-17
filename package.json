@@ -1,0 +1,13 @@
+{
+  "name": "@civ-clone/civ2-spaceship",
+  "version": "0.0.0",
+  "description": "Civilization II's spaceship: its parts, their limits, the flight and the launch.",
+  "repository": "git@github.com:civ-clone/civ2-spaceship.git",
+  "keywords": [
+    "typescript",
+    "civilization"
+  ],
+  "author": "dom111 <dom111@users.noreply.github.com>",
+  "license": "MIT",
+  "private": false
+}

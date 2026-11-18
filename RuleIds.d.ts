@@ -7,5 +7,7 @@ export declare const RuleIds: {
   buildCost: string;
   arrival: string;
   launchable: string;
+  computerPart: string;
+  computerLaunch: string;
 };
 export default RuleIds;

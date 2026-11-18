@@ -15,6 +15,7 @@ import playerAction from './Rules/Player/action';
 import playerDefeated from './Rules/Player/defeated';
 import spaceshipActive from './Rules/Spaceship/active';
 import spaceshipChooseSlot from './Rules/Spaceship/choose-slot';
+import spaceshipComputer from './Rules/Spaceship/computer';
 import spaceshipEvents from './Rules/Spaceship/events';
 import spaceshipStats from './Rules/Spaceship/stats';
 import spaceshipYield from './Rules/Spaceship/yield';
@@ -56,6 +57,12 @@ export const register = (game: Game): void => {
     ...playerDefeated(game.spaceships),
     ...spaceshipActive(game.spaceships, game.clients),
     ...spaceshipChooseSlot(),
+    ...spaceshipComputer({
+      ...shipDependencies,
+      gameDifficultyRegistry: game.difficulty,
+      playerRegistry: game.players,
+      playerTreasuryRegistry: game.playerTreasuries,
+    }),
     ...spaceshipEvents({ ...shipDependencies, engine: game.engine }),
     ...spaceshipStats({ ...shipDependencies, engine: game.engine }),
     ...spaceshipYield(),

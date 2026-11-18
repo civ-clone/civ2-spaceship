@@ -97,4 +97,10 @@ Register `SpaceshipLayout` with the game's saveable classes. The launch record i
   tenths.
 - A computer player's choice of part is asked as a city chooses what to build, and its launch at the end of each of its
   turns (the AI client's); the original asks as a part is finished, which turns the structural the city built into
-  the part wanted. Its re-picked production after a launch is the client's. The launch's diplomacy is civ2-diplomacy's.
+  the part wanted (and asks again with the part's own group when the city's shields fall short). Its re-picked
+  production after a launch is the client's. The launch's diplomacy is civ2-diplomacy's.
+- A computer player decides to launch with life support not applied, as the original does, but the ship launches only
+  when `Launchable` allows it, with it applied: a ship with a solar panel and no life support yet waits for the life
+  support, where the original's would go.
+- A person's ship that hasn't launched arrives, to a computer player, in the year worked out now; the original reads
+  the year last worked out for that person's ship.

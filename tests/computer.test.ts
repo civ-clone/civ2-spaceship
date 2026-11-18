@@ -193,6 +193,11 @@ describe('a computer player launching (spaceship_add_part)', (): void => {
   it('never launches below 40%, life support not applied', (): void => {
     // No modules: no energy, so 0%.
     expect(launches(ship({ built: [39, 8, 8, 0, 0, 0] }))).false;
+    // No life support: 0% with it applied, 98% without, as the original's computer reckons it.
+    expect(computerStats(ship({ built: [15, 3, 3, 1, 0, 1] })).success).equal(
+      98
+    );
+    expect(launches(ship({ built: [15, 3, 3, 1, 0, 1] }))).true;
   });
 
   it('launches once its structurals and components are built in full', (): void => {
@@ -219,6 +224,9 @@ describe('a computer player launching (spaceship_add_part)', (): void => {
     expect(
       launches(ship({ built, others: [other({ human: true, gold: 1000 })] }))
     ).true;
+    expect(
+      launches(ship({ built, others: [other({ human: true, gold: 999 })] }))
+    ).false;
     expect(
       launches(
         ship({

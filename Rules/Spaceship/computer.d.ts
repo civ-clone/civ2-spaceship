@@ -19,12 +19,15 @@ export interface ComputerDependencies extends ShipDependencies {
 }
 /**
  * `spaceship`, a computer player's, as `lib/computer` reads it: with one more of each kind for each in `building` (the
- *  parts its cities are building already, so that two cities don't add the same part the ship wants once).
+ *  parts its cities are building already, so that two cities don't add the same part the ship wants once). Every other
+ *  player but the barbarians is among its `others`, with a ship or not, as the original asks of every person. The
+ *  power ranks and the gold are read only `forLaunch`: the choice of part doesn't use them.
  */
 export declare const computerShip: (
   spaceship: Spaceship,
   dependencies?: ComputerDependencies,
-  building?: (typeof Part)[]
+  building?: (typeof Part)[],
+  forLaunch?: boolean
 ) => ComputerShip;
 /**
  * The rule a computer player's launch is decided by (`lib/computer` `launches`), waiting for another computer player's

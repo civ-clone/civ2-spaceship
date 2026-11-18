@@ -97,8 +97,8 @@ export declare const nextPart: (ship: ComputerShip) => number;
 /** How a computer player waits for another computer player's launch, above King. */
 export type LaunchWait =
   /**
-   * The original's: it compares another computer's arrival with the barbarians' ship's (`civs[0]`), whose year is
-   *  always 0, so it never waits.
+   * The original's: it compares another computer's arrival with the barbarians' ship's (`civs[0]`), whose year is 0
+   *  in practice, so it never waits.
    */
   | 'classic'
   /** Waits while another computer player's ship in flight arrives before this one would. */

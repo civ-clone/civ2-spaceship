@@ -70,12 +70,15 @@ const goldOf = (
 
 /**
  * `spaceship`, a computer player's, as `lib/computer` reads it: with one more of each kind for each in `building` (the
- *  parts its cities are building already, so that two cities don't add the same part the ship wants once).
+ *  parts its cities are building already, so that two cities don't add the same part the ship wants once). Every other
+ *  player but the barbarians is among its `others`, with a ship or not, as the original asks of every person. The
+ *  power ranks and the gold are read only `forLaunch`: the choice of part doesn't use them.
  */
 export const computerShip = (
   spaceship: Spaceship,
   dependencies: ComputerDependencies = {},
-  building: (typeof Part)[] = []
+  building: (typeof Part)[] = [],
+  forLaunch: boolean = true
 ): ComputerShip => {
   const {
       clientRegistry = clientRegistryInstance,
@@ -94,7 +97,7 @@ export const computerShip = (
     players = playerRegistry
       .entries()
       .filter((other: Player): boolean => !isBarbarian(other)),
-    ranked = rankings(players, ruleRegistry);
+    ranked = forLaunch ? rankings(players, ruleRegistry) : [];
 
   building.forEach((PartType: typeof Part): void => {
     const kind = partTypes.indexOf(PartType);
@@ -116,25 +119,20 @@ export const computerShip = (
     level: levelOf(gameDifficultyRegistry),
     others: players
       .filter((other: Player): boolean => other !== player)
-      .map((other: Player): OtherShip | null => {
-        const ship = spaceshipRegistry.getActiveByPlayer(other);
-
-        if (ship === null) {
-          return null;
-        }
-
-        const exists = hasSpaceship(other, spaceshipRegistry);
+      .map((other: Player): OtherShip => {
+        const ship = spaceshipRegistry.getActiveByPlayer(other),
+          exists = hasSpaceship(other, spaceshipRegistry);
 
         return {
           human: isHuman(other, clientRegistry),
           launched: hasLaunched(other, spaceshipRegistry),
           exists,
-          arrivalYear: exists ? arrivalYear(ship, now, dependencies) : 0,
-          stronger: ranked.indexOf(other) < ranked.indexOf(player),
-          gold: goldOf(other, playerTreasuryRegistry),
+          arrivalYear:
+            exists && ship !== null ? arrivalYear(ship, now, dependencies) : 0,
+          stronger: forLaunch && ranked.indexOf(other) < ranked.indexOf(player),
+          gold: forLaunch ? goldOf(other, playerTreasuryRegistry) : 0,
         };
-      })
-      .filter((other: OtherShip | null): other is OtherShip => other !== null),
+      }),
   };
 };
 
@@ -185,7 +183,9 @@ export const getRules = (
         available: (typeof Part)[],
         building: (typeof Part)[]
       ): typeof Part | null => {
-        const kind = nextPart(computerShip(spaceship, dependencies, building)),
+        const kind = nextPart(
+            computerShip(spaceship, dependencies, building, false)
+          ),
           PartType = kind < 0 ? null : partTypes[kind];
 
         return PartType !== null && available.includes(PartType)

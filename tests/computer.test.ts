@@ -40,6 +40,7 @@ import Part from '@civ-clone/core-spaceship/Part';
 import Player from '@civ-clone/core-player/Player';
 import PlayerResearch from '@civ-clone/core-science/PlayerResearch';
 import Plastics from '@civ-clone/base-science-advance-plastics/Plastics';
+import Rank from '@civ-clone/core-power/Rules/Rank';
 import RuleIds from '../RuleIds';
 import RuleRegistry from '@civ-clone/core-rule/RuleRegistry';
 import SpaceFlight from '@civ-clone/base-science-advance-spaceflight/SpaceFlight';
@@ -162,6 +163,29 @@ describe('a computer player adding parts (spaceship_choose_part_group, spaceship
         STRUCTURALS
       )
     ).equal(STRUCTURALS);
+  });
+});
+
+describe('a close race (spaceship_choose_part_group)', (): void => {
+  it("takes no components once its ship would arrive within 14 years, before every person's", (): void => {
+    // 27 structurals (6 propulsion and 6 fuel count): 5 + 6 components arrive in 14 years, 5 + 7 in 15.
+    const close = ship({ built: [27, 5, 6, 1, 1, 1] }),
+      notClose = ship({ built: [27, 5, 7, 1, 1, 1] });
+
+    expect(ownArrivalYear(close) - close.year).equal(14);
+    expect(ownArrivalYear(notClose) - notClose.year).equal(15);
+    expect(choosePartGroup(close, STRUCTURALS)).equal(STRUCTURALS);
+    expect(choosePartGroup(notClose, STRUCTURALS)).equal(COMPONENTS);
+    // Not close when a person's ship would arrive first.
+    expect(
+      choosePartGroup(
+        {
+          ...close,
+          others: [other({ human: true, arrivalYear: close.year + 10 })],
+        },
+        STRUCTURALS
+      )
+    ).equal(COMPONENTS);
   });
 });
 
@@ -347,15 +371,38 @@ describe('the computer players rules (base-spaceship ComputerSpaceshipPart, Comp
     ).eql([null]);
   });
 
-  it('launches a computer player\'s ship over 75%, with "other-computers" offered for a rule set to register', (): void => {
-    const { complete, computer, game, rules } = setUp();
+  // The computer player ranks above the person unless `personStronger` (core-power's `Rank`).
+  const ranked = (
+    rules: RuleRegistry,
+    person: Player,
+    personStronger: boolean
+  ) =>
+    rules.register(
+      new Rank(
+        new Effect((player: Player): number =>
+          (player === person) === personStronger ? 10 : 1
+        )
+      )
+    );
 
+  const ship15 = (
+    complete: (player: Player, PartType: typeof Part, count?: number) => void,
+    computer: Player,
+    components: number
+  ) => {
     complete(computer, Structural, 15);
-    complete(computer, Propulsion, 2);
-    complete(computer, Fuel, 2);
+    complete(computer, Propulsion, components);
+    complete(computer, Fuel, components);
     complete(computer, Habitation);
     complete(computer, LifeSupport);
     complete(computer, Power);
+  };
+
+  it('launches a computer player\'s ship over 75%, with "other-computers" offered for a rule set to register', (): void => {
+    const { complete, computer, game, person, rules } = setUp();
+
+    ranked(rules, person, false);
+    ship15(complete, computer, 2);
 
     const spaceship = game.spaceships.getActiveByPlayer(computer)!;
 
@@ -372,5 +419,29 @@ describe('the computer players rules (base-spaceship ComputerSpaceshipPart, Comp
         year: game.year,
       }).process(spaceship)
     ).true;
+  });
+
+  it("reads a person's power rank for the launch, whether or not the person has a ship", (): void => {
+    // 15 structurals, 1 + 1 components: 67%, launched only when a person is stronger.
+    const weaker = setUp(),
+      stronger = setUp();
+
+    ranked(weaker.rules, weaker.person, false);
+    ranked(stronger.rules, stronger.person, true);
+    ship15(weaker.complete, weaker.computer, 1);
+    ship15(stronger.complete, stronger.computer, 1);
+
+    expect(
+      weaker.rules.process(
+        ComputerLaunch,
+        weaker.game.spaceships.getActiveByPlayer(weaker.computer)!
+      )
+    ).eql([false]);
+    expect(
+      stronger.rules.process(
+        ComputerLaunch,
+        stronger.game.spaceships.getActiveByPlayer(stronger.computer)!
+      )
+    ).eql([true]);
   });
 });

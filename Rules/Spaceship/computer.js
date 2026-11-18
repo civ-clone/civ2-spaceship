@@ -32,12 +32,14 @@ const goldOf = (player, playerTreasuryRegistry) => {
 };
 /**
  * `spaceship`, a computer player's, as `lib/computer` reads it: with one more of each kind for each in `building` (the
- *  parts its cities are building already, so that two cities don't add the same part the ship wants once).
+ *  parts its cities are building already, so that two cities don't add the same part the ship wants once). Every other
+ *  player but the barbarians is among its `others`, with a ship or not, as the original asks of every person. The
+ *  power ranks and the gold are read only `forLaunch`: the choice of part doesn't use them.
  */
-const computerShip = (spaceship, dependencies = {}, building = []) => {
+const computerShip = (spaceship, dependencies = {}, building = [], forLaunch = true) => {
     const { clientRegistry = ClientRegistry_1.instance, gameDifficultyRegistry = GameDifficultyRegistry_1.instance, playerRegistry = PlayerRegistry_1.instance, playerResearchRegistry = PlayerResearchRegistry_1.instance, playerTreasuryRegistry = PlayerTreasuryRegistry_1.instance, ruleRegistry = RuleRegistry_1.instance, spaceshipRegistry = SpaceshipRegistry_1.instance, year = Year_1.instance, } = dependencies, player = spaceship.player(), now = year.value(), counts = (0, ship_1.built)(spaceship), research = playerResearchRegistry.getByPlayer(player), players = playerRegistry
         .entries()
-        .filter((other) => !(0, isBarbarian_1.default)(other)), ranked = (0, rank_1.rankings)(players, ruleRegistry);
+        .filter((other) => !(0, isBarbarian_1.default)(other)), ranked = forLaunch ? (0, rank_1.rankings)(players, ruleRegistry) : [];
     building.forEach((PartType) => {
         const kind = parts_1.partTypes.indexOf(PartType);
         if (kind >= 0) {
@@ -55,21 +57,16 @@ const computerShip = (spaceship, dependencies = {}, building = []) => {
         others: players
             .filter((other) => other !== player)
             .map((other) => {
-            const ship = spaceshipRegistry.getActiveByPlayer(other);
-            if (ship === null) {
-                return null;
-            }
-            const exists = (0, ship_1.hasSpaceship)(other, spaceshipRegistry);
+            const ship = spaceshipRegistry.getActiveByPlayer(other), exists = (0, ship_1.hasSpaceship)(other, spaceshipRegistry);
             return {
                 human: (0, isHuman_1.default)(other, clientRegistry),
                 launched: (0, ship_1.hasLaunched)(other, spaceshipRegistry),
                 exists,
-                arrivalYear: exists ? (0, ship_1.arrivalYear)(ship, now, dependencies) : 0,
-                stronger: ranked.indexOf(other) < ranked.indexOf(player),
-                gold: goldOf(other, playerTreasuryRegistry),
+                arrivalYear: exists && ship !== null ? (0, ship_1.arrivalYear)(ship, now, dependencies) : 0,
+                stronger: forLaunch && ranked.indexOf(other) < ranked.indexOf(player),
+                gold: forLaunch ? goldOf(other, playerTreasuryRegistry) : 0,
             };
-        })
-            .filter((other) => other !== null),
+        }),
     };
 };
 exports.computerShip = computerShip;
@@ -93,7 +90,7 @@ const getRules = (dependencies = {}) => [
         var _a;
         return !(0, isHuman_1.default)(spaceship.player(), (_a = dependencies.clientRegistry) !== null && _a !== void 0 ? _a : ClientRegistry_1.instance);
     }), new Effect_1.default((spaceship, available, building) => {
-        const kind = (0, computer_1.nextPart)((0, exports.computerShip)(spaceship, dependencies, building)), PartType = kind < 0 ? null : parts_1.partTypes[kind];
+        const kind = (0, computer_1.nextPart)((0, exports.computerShip)(spaceship, dependencies, building, false)), PartType = kind < 0 ? null : parts_1.partTypes[kind];
         return PartType !== null && available.includes(PartType)
             ? PartType
             : null;

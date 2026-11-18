@@ -6,14 +6,14 @@ richardpenman/civ2@49f26ec): the Classic behaviour, numbers only.
 
 ## Parts (`data/parts`)
 
-| Kind | Most built | Mass | Cost | Advance |
-|---|---|---|---|---|
-| Structural | 39 | 1 | 80 | Space Flight |
-| Propulsion | 8 | 4 | 160 | Plastics |
-| Fuel | 8 | 4 | 160 | Plastics |
-| Habitation | 4 | 16 | 320 | Superconductor |
-| Life Support | 4 | 16 | 320 | Superconductor |
-| Solar Panel (`Power`) | 4 | 16 | 320 | Superconductor |
+| Kind                  | Most built | Mass | Cost | Advance        |
+| --------------------- | ---------- | ---- | ---- | -------------- |
+| Structural            | 39         | 1    | 80   | Space Flight   |
+| Propulsion            | 8          | 4    | 160  | Plastics       |
+| Fuel                  | 8          | 4    | 160  | Plastics       |
+| Habitation            | 4          | 16   | 320  | Superconductor |
+| Life Support          | 4          | 16   | 320  | Superconductor |
+| Solar Panel (`Power`) | 4          | 16   | 320  | Superconductor |
 
 - **Building them** (`Requirements`, `Rules/City/build`): the Apollo Program built by anyone, even if lost since
   (`Part` requires `ApolloProgram` at `range: 'world'`); each kind's advance; only for a ship that hasn't launched, in
@@ -40,8 +40,7 @@ richardpenman/civ2@49f26ec): the Classic behaviour, numbers only.
 
 ## Launch and arrival
 
-- **Launchable** (`civ2-spaceship:spaceship/launchable`): a habitation module built (counted or not) and success above
-  0. `launch()` does nothing otherwise, so the `LaunchSpaceship` action is offered only then.
+- **Launchable** (`civ2-spaceship:spaceship/launchable`): a habitation module built (counted or not) and success above 0. `launch()` does nothing otherwise, so the `LaunchSpaceship` action is offered only then.
 - **The launch** is recorded in the game's pending effects (`lib/ship` `launchRecord`: fusion, launch year, arrival
   year) and `player:spaceship:launched` is emitted with the player and the arrival year. From then on every turn is a
   year (`civ2-game-year`).
@@ -66,7 +65,8 @@ answered for a computer player's ship only:
   above King, not while another computer player's ship in flight arrives first (`LaunchWait`); otherwise over 75%, or
   when a person's player is stronger, or a person has a ship and more than 999 gold. Built that way, a computer
   player's ship launches at 15 structurals, 3 + 3 components and a module of each: 3,120 shields, 94%, 21 years.
-- **The wait for another computer** compares that ship's arrival with the barbarians' (`civs[0]`, always 0), so it
+- **The wait for another computer** compares that ship's arrival with the barbarians' (`civs[0]`), which is 0 in
+  practice (the barbarians would need the Apollo Program and Space Flight for a city of theirs to work it out), so it
   never waits (`'classic'`, the original's). `computerLaunchRule(id, 'other-computers')` compares it with this ship's
   own, for civ2-enhanced to register.
 

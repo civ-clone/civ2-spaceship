@@ -9,6 +9,8 @@ export const RuleIds = {
   buildCost: `${prefix}:city/build-cost`,
   arrival: `${prefix}:turn/start/arrival`,
   launchable: `${prefix}:spaceship/launchable`,
+  computerPart: `${prefix}:spaceship/computer/part`,
+  computerLaunch: `${prefix}:spaceship/computer/launch`,
 };
 
 export default RuleIds;

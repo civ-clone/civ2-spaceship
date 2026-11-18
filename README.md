@@ -49,6 +49,27 @@ richardpenman/civ2@49f26ec): the Classic behaviour, numbers only.
   come lands, in player order, one a turn, before the retirement check. There is no failure roll: the first to land
   wins (`civ2-game-end`).
 
+## The computer players' ships (`lib/computer`, `Rules/Spaceship/computer`)
+
+From `spaceship_choose_part_group` and `spaceship_add_part` (`spaceship.cpp:1769`, `:1860`), for an AI client to read
+through base-spaceship's `ComputerSpaceshipPart` and `ComputerLaunch` (`RuleIds.computerPart`, `computerLaunch`),
+answered for a computer player's ship only:
+
+- **The next part:** as a structural is finished, the original chooses the group again: modules while one more would
+  count, then components (not when the race is close: the ship arriving within 14 years and before every person's),
+  then structurals; while a person's ship in flight arrives no later than this one's projection, components it can still
+  use. Within a group: propulsion while it has fewer than fuel, else fuel; the module it has fewest of. A computer
+  player's ship counts one of each module, so it never adds a second. The parts its cities are building count as added,
+  and a part no city of the player can build now is no answer (`null`).
+- **The launch,** with life support not applied, as the original works it out: never below 40% success; once its
+  structurals and both components are built in full; while a person's ship is in flight, only to arrive before it;
+  above King, not while another computer player's ship in flight arrives first (`LaunchWait`); otherwise over 75%, or
+  when a person's player is stronger, or a person has a ship and more than 999 gold. Built that way, a computer
+  player's ship launches at 15 structurals, 3 + 3 components and a module of each: 3,120 shields, 94%, 21 years.
+- **The wait for another computer** compares that ship's arrival with the barbarians' (`civs[0]`, always 0), so it
+  never waits (`'classic'`, the original's). `computerLaunchRule(id, 'other-computers')` compares it with this ship's
+  own, for civ2-enhanced to register.
+
 ## Losing a ship
 
 - **The capital taken:** civ2-city-improvement's Palace escape loses the ship whenever the Palace isn't moved to
@@ -74,5 +95,6 @@ Register `SpaceshipLayout` with the game's saveable classes. The launch record i
   built.
 - The flight time a ship shows before it launches is the arrival flight in whole years, not the mass's flight in
   tenths.
-- Not here: a computer player's launch and its re-picked production (the computer players' space race), and the
-  launch's diplomacy (civ2-diplomacy).
+- A computer player's choice of part is asked as a city chooses what to build, and its launch at the end of each of its
+  turns (the AI client's); the original asks as a part is finished, which turns the structural the city built into
+  the part wanted. Its re-picked production after a launch is the client's. The launch's diplomacy is civ2-diplomacy's.

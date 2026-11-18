@@ -11,6 +11,8 @@ exports.RuleIds = {
     buildCost: `${exports.prefix}:city/build-cost`,
     arrival: `${exports.prefix}:turn/start/arrival`,
     launchable: `${exports.prefix}:spaceship/launchable`,
+    computerPart: `${exports.prefix}:spaceship/computer/part`,
+    computerLaunch: `${exports.prefix}:spaceship/computer/launch`,
 };
 exports.default = exports.RuleIds;
 //# sourceMappingURL=RuleIds.js.map

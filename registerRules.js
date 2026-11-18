@@ -10,6 +10,7 @@ const action_1 = require("./Rules/Player/action");
 const defeated_1 = require("./Rules/Player/defeated");
 const active_1 = require("./Rules/Spaceship/active");
 const choose_slot_1 = require("./Rules/Spaceship/choose-slot");
+const computer_1 = require("./Rules/Spaceship/computer");
 const events_1 = require("./Rules/Spaceship/events");
 const stats_1 = require("./Rules/Spaceship/stats");
 const yield_1 = require("./Rules/Spaceship/yield");
@@ -33,7 +34,12 @@ const register = (game) => {
     game.rules.register(...(0, build_cost_1.default)(), ...(0, building_complete_1.default)({
         ...shipDependencies,
         playerRegistry: game.players,
-    }), ...(0, action_1.default)(game.spaceships), ...(0, defeated_1.default)(game.spaceships), ...(0, active_1.default)(game.spaceships, game.clients), ...(0, choose_slot_1.default)(), ...(0, events_1.default)({ ...shipDependencies, engine: game.engine }), ...(0, stats_1.default)({ ...shipDependencies, engine: game.engine }), ...(0, yield_1.default)(), ...(0, start_1.default)({
+    }), ...(0, action_1.default)(game.spaceships), ...(0, defeated_1.default)(game.spaceships), ...(0, active_1.default)(game.spaceships, game.clients), ...(0, choose_slot_1.default)(), ...(0, computer_1.default)({
+        ...shipDependencies,
+        gameDifficultyRegistry: game.difficulty,
+        playerRegistry: game.players,
+        playerTreasuryRegistry: game.playerTreasuries,
+    }), ...(0, events_1.default)({ ...shipDependencies, engine: game.engine }), ...(0, stats_1.default)({ ...shipDependencies, engine: game.engine }), ...(0, yield_1.default)(), ...(0, start_1.default)({
         ...shipDependencies,
         cityBuildRegistry: game.cityBuilds,
         cityImprovementRegistry: game.cityImprovements,
